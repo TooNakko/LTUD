@@ -115,20 +115,20 @@ def FitModel(df, features, targets, test_arr, method_init):
     test_predicted = method.predict(test_arr)
     return test_predicted
 
-def PredictingAndGenOutput(df_input):
-    with open('output.txt', 'w') as f:  
-        count_false_dtree = 0
-        for idx in range(len(test_arr)):
-            #if np.array_equal(test_predicted_dtree[idx], target_truth[idx]):
-            if (test_predicted_dtree[idx] == truth_arr[idx]).all():
-                continue
-            else:
-                count_false_dtree +=1
-                f.write("Wrong prediction found at sample {}: {}\nTruth is {} while {} is predicted.\n\n".format(border + idx + 1, test_arr[idx], truth_arr[idx],test_predicted_dtree[idx]))
-                #print("Wrong prediction found at sample {}: {}\nTruth is {} while {} is predicted.\n\n".format(border + idx, test_arr[idx], test_predicted_dtree[idx], truth_arr[idx]))
-    
-    print('Total false predictions is ', count_false_dtree, " out of ", len(test_arr))
-    print('Please check output.txt for more information!')
+#def PredictingAndGenOutput(df_input):
+#    with open('output.txt', 'w') as f:  
+#        count_false_dtree = 0
+#        for idx in range(len(test_arr)):
+#            #if np.array_equal(test_predicted_dtree[idx], target_truth[idx]):
+#            if (test_predicted_dtree[idx] == truth_arr[idx]).all():
+#                continue
+#            else:
+#                count_false_dtree +=1
+#                f.write("Wrong prediction found at sample {}: {}\nTruth is {} while {} is predicted.\n\n".format(border + idx + 1, test_arr[idx], truth_arr[idx],test_predicted_dtree[idx]))
+#                #print("Wrong prediction found at sample {}: {}\nTruth is {} while {} is predicted.\n\n".format(border + idx, test_arr[idx], test_predicted_dtree[idx], truth_arr[idx]))
+#    
+#    print('Total false predictions is ', count_false_dtree, " out of ", len(test_arr))
+#    print('Please check output.txt for more information!')
 def main():
     warnings.filterwarnings("ignore")
     arg = parse_args()
@@ -180,8 +180,6 @@ def main():
         output_predicted = FitModel(df, features, targets, output_arr, method_init)
         PredictingTest(test_predicted, test_arr, truth_arr, border)
     else:
-
-
 
         test_arr, truth_arr =   GenTestArr(df_test, features, targets)
         test_predicted = FitModel(df, features, targets, test_arr, method_init)
