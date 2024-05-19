@@ -75,11 +75,10 @@ def GetConfusionMatrix(target_truth, test_predicted_dtree):
     confusion_matrix = metrics.confusion_matrix(target_truth, test_predicted_dtree)
     cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix)
     Accuracy = metrics.accuracy_score(target_truth, test_predicted_dtree)
-    Precision = metrics.precision_score(target_truth, test_predicted_dtree)
-    Sensitivity_recall = metrics.recall_score(target_truth, test_predicted_dtree)
-    Specificity = metrics.recall_score(target_truth, test_predicted_dtree, pos_label=0)
-    F1_score = metrics.f1_score(target_truth, test_predicted_dtree)
-    return cm_display, Accuracy, Precision, Sensitivity_recall, Specificity, F1_score
+    Precision = metrics.precision_score(target_truth, test_predicted_dtree,  average='micro')
+    Sensitivity_recall = metrics.recall_score(target_truth, test_predicted_dtree,  average='micro')
+    F1_score = metrics.f1_score(target_truth, test_predicted_dtree,  average='micro')
+    return cm_display, Accuracy, Precision, Sensitivity_recall, F1_score
 
 
 
@@ -133,8 +132,8 @@ def PredictModel(predicting_arr, model):
     return test_predicted
 
 
-def PredictingAndGenOutput(df_input, output_predicted, headers):
-    with open('result.txt', 'w') as f:  
+def PredictingAndGenOutput(df_input, output_predicted, headers, result_txt):
+    with open(result_txt, 'w') as f:  
         f.write(str(headers))
         f.write('\n')
         idx = 1
@@ -149,7 +148,10 @@ def main():
     
     try:
         train_csv = arg.train
-        test_ratio = arg.ratio
+        if arg.ratio == 100:
+            test_ratio = 99
+        else:
+            test_ratio = arg.ratio
         n_targets = arg.target
         method = arg.method
         input_csv = arg.predict
@@ -169,13 +171,21 @@ def main():
         if flag == 1:
             method_init = DecisionTreeClassifier(criterion="gini", max_depth= max_arg)
             model_name = "Decision_Tree.pkl"
+            result_txt = "Result_Decision_Tree.txt"
         else:
             method_init = DecisionTreeClassifier(criterion="gini")
             model_name = "Decision_Tree.pkl"
+            result_txt = "Result_Decision_Tree.txt"
+
 
     elif method == "RF":
         method_init = RandomForestClassifier(n_estimators= max_arg)
         model_name = "RandomForest.pkl"
+        result_txt = "Result_Random_Forest.txt"
+
+    else:
+        print("Method chưa chính xác, hãy chắc chắn bạn viết in hoa toàn bộ kí tự.")
+        return
 
     if input_csv == '0':
         full_df = pandas.read_csv(train_csv)
@@ -198,9 +208,9 @@ def main():
         with open(model_name, 'wb') as file:  
             pickle.dump(method_init, file)
         PredictingTest(test_predicted, test_arr, truth_arr, border)
-        cm_display, Accuracy, Precision, Sensitivity_recall, Specificity, F1_score = GetConfusionMatrix(truth_arr, test_predicted)
+        cm_display, Accuracy, Precision, Sensitivity_recall,  F1_score = GetConfusionMatrix(truth_arr, test_predicted)
 
-        print("Accuracy: {}\nPrecision: {}\nSensitivity: {}\nSpecificity: {}\nF1 score: {}".format(Accuracy, Precision, Sensitivity_recall, Specificity, F1_score))
+        print("Accuracy: {}\nPrecision: {}\nSensitivity: {}\nF1 score: {}".format(Accuracy, Precision, Sensitivity_recall, F1_score))
         cm_display.plot()
         plt.show()
     else:
@@ -216,7 +226,7 @@ def main():
         p  = PredictModel(output_arr, model)
 
         #output_predicted = FitModel(df_input, features, targets, output_arr, method_init)
-        PredictingAndGenOutput(output_arr, p ,headers_input)
+        PredictingAndGenOutput(output_arr, p ,headers_input, result_txt)
     
     return 
 
