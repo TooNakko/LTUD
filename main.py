@@ -139,8 +139,15 @@ def PredictingAndGenOutput(df_input, output_predicted, headers, result_txt):
         f.write('\n')
         idx = 1
         for input in df_input:
-            f.write("Case {:5}:   {:25s} | Result: {}\n".format(idx, str(input), output_predicted[idx - 1]))
+            f.write("Case {:5}:  {:25s} | Result: {}\n".format(idx, str(input), output_predicted[idx - 1]))
             idx +=1
+
+
+
+
+
+
+
 
 
 def main():
@@ -166,8 +173,6 @@ def main():
         print("Error: ",e)
         return
     
-
-
     if method == "DT":
         if flag == 1:
             method_init = DecisionTreeClassifier(criterion="gini", max_depth= max_arg)
@@ -191,6 +196,7 @@ def main():
     if input_csv == '0': #TRAIN
         full_df = pandas.read_csv(train_csv)
         headers = pandas.read_csv(train_csv, nrows=0).columns.tolist()
+
         numerical_mapping = MapToNumericalValue(headers, full_df)
 
 
