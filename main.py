@@ -16,6 +16,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Lap Trinh Ung Dung bai tap lon - Chan doan benh dua tren du lieu co san.\nNgac Anh Kiet - 21020290; Pham Le Duc Thanh - 21021637 - Nguyen Vu Minh Thanh = 21020", formatter_class=RawTextHelpFormatter)
     parser.add_argument("--train", type=str, help="Link to file csv for training.")
     parser.add_argument("--predict", type=str, help="Link to file csv that you need the model to predict.", default = '0')
+
     parser.add_argument("--method", type=str, help="Decision Tree DT or Random Forest RF.", default = "DT")
     parser.add_argument("--target", type=int, help="Number of targets.", default = 1)
     parser.add_argument("--ratio", type=int, help="Numbers of training data in percentage, the rest are for testing data.", default = 80)
@@ -187,7 +188,7 @@ def main():
         print("Method chưa chính xác, hãy chắc chắn bạn viết in hoa toàn bộ kí tự.")
         return
 
-    if input_csv == '0':
+    if input_csv == '0': #TRAIN
         full_df = pandas.read_csv(train_csv)
         headers = pandas.read_csv(train_csv, nrows=0).columns.tolist()
         numerical_mapping = MapToNumericalValue(headers, full_df)
