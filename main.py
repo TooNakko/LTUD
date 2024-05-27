@@ -1,11 +1,9 @@
 import argparse
 from argparse import RawTextHelpFormatter
 import pandas
-import numpy as np
+
 import matplotlib.pyplot as plt
-from sklearn import linear_model
-from sklearn import tree
-from sklearn.metrics import r2_score
+import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
@@ -13,7 +11,7 @@ import warnings
 import pickle
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Lap Trinh Ung Dung bai tap lon - Chan doan benh dua tren du lieu co san.\nNgac Anh Kiet - 21020290; Pham Le Duc Thanh - 21021637 - Nguyen Vu Minh Thanh = 21020", formatter_class=RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(description="Lap Trinh Ung Dung bai tap lon - Chan doan benh su dung Decision Tree hoac Random Forest.\nNgac Anh Kiet - 21020290; Pham Le Duc Thanh - 21021637 - Nguyen Vu Minh Thanh = 21020667", formatter_class=RawTextHelpFormatter)
     parser.add_argument("--train", type=str, help="Link to file csv for training.")
     parser.add_argument("--predict", type=str, help="Link to file csv that you need the model to predict.", default = '0')
 
@@ -73,6 +71,8 @@ def GetFeaturesAndTargets(train_csv, n_target):
     return features, targets
 
 def GetConfusionMatrix(target_truth, test_predicted_dtree):
+    target_truth = np.array(target_truth)
+    test_predicted_dtree = np.array(test_predicted_dtree)
     confusion_matrix = metrics.confusion_matrix(target_truth, test_predicted_dtree)
     cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix)
     Accuracy = metrics.accuracy_score(target_truth, test_predicted_dtree)
