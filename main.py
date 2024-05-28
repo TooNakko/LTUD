@@ -143,13 +143,6 @@ def PredictingAndGenOutput(df_input, output_predicted, headers, result_txt):
             idx +=1
 
 
-
-
-
-
-
-
-
 def main():
     warnings.filterwarnings("ignore")
     arg = parse_args()
@@ -219,7 +212,33 @@ def main():
 
         print("Accuracy: {}\nPrecision: {}\nSensitivity: {}\nF1 score: {}".format(Accuracy, Precision, Sensitivity_recall, F1_score))
         cm_display.plot()
+
+        if method == "RF":
+            importances = method_init.feature_importances_
+            std = np.std([tree.feature_importances_ for tree in method_init.estimators_], axis=0)
+
+            forest_importances = pandas.Series(importances, index=features)
+
+            fig, ax = plt.subplots()
+            forest_importances.plot.bar(yerr=std, ax=ax)
+            ax.set_title("Feature importances")
+            ax.set_ylabel("Mean decrease in impurity")
+            fig.tight_layout()
+            fig.savefig("Feature_Importance_RF.jpg")
+        else:
+            importances = method_init.feature_importances_
+            std = np.std([importances], axis=0)
+
+            forest_importances = pandas.Series(importances, index=features)
+
+            fig, ax = plt.subplots()
+            forest_importances.plot.bar(yerr=std, ax=ax)
+            ax.set_title("Feature importances")
+            ax.set_ylabel("Mean decrease in impurity")
+            fig.tight_layout()
+            fig.savefig("Feature_Importance_DT.jpg")
         plt.show()
+
     else:
         with open(model_name, 'rb') as file:  
             model = pickle.load(file)
@@ -231,7 +250,6 @@ def main():
         features, targets = GetFeaturesAndTargets(input_csv, n_targets - 1)
         output_arr, _    =  GenTestArr(df_input, features, targets)
         p  = PredictModel(output_arr, model)
-
         #output_predicted = FitModel(df_input, features, targets, output_arr, method_init)
         PredictingAndGenOutput(output_arr, p ,headers_input, result_txt)
     
